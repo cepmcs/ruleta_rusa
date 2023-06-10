@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  server:
+    image: carlospmve/ruleta_rusa-server:latest
+
+  client:
+    image: carlospmve/ruleta_rusa-client:latest
+    ports:
+      - 5000:5000
+      
+  redis-cluster:
+    image: "redis:alpine"

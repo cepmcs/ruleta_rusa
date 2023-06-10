@@ -1,0 +1,20 @@
+
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: ruletarusa-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ruletarusa-server
+  template:
+    metadata:
+      labels:
+        app: ruletarusa-server
+    spec:
+      containers:
+      - name: ruletarusa-server
+        image: carlospmve/ruleta_rusa-server
+        ports:
+        - containerPort: 4000

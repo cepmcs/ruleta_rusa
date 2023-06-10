@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+        <meta charset="utf-8">
+	<title>ruleta rusa</title>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+	
+<body>
+	<h1 style="text-align:center">Ruleta Rusa</h1>
+	
+	<div class="2imagenes">
+	<p style="text-align:center">
+	<img id="BANG" src="https://i.postimg.cc/j5cZScb5/disparo.png" height="600" width="600" hidden>
+	<img type=png src="https://i.postimg.cc/xC9qPybL/pngegg.png" alt="revolver" width=590 height=360  class="center">
+	</p>
+	</div>
+	
+	<p style="text-align:center">
+	<button type="button" href="#" id="btn">Recargar</button
+	</p>
+	
+	<p style="text-align:center">
+	 <button onclick="disparar()">Jalar el gatillo</button> 
+	</p>
+	
+	<p style="text-align:center" id="Texto1"></p>
+	
+	<h1 style="text-align:center" id="Texto2"></h1>
+	
+	<p style="text-align:center" id="Cont_disparos"></p>
+	
+	<p style="text-align:center" id="Texto_VE"> </p>
+	
+	<p style="text-align:center" id="Texto_VE">
+	<button hidden id="vida_extra" class="btn btn-success" onclick=" window.open('https://www.youtube.com/watch?v=a3Z7zEc7AXQ&ab_channel=RVE','_blank')">Vida Extra!</button>
+	</p>
+	
+ <script type="text/javascript">
+ 	var revolver;
+ 	var cont = 9999999;
+ 	const texto = "Has apretado el gatillo "
+ 	
+      $('button#btn').click(function(){
+      
+      	document.body.style.backgroundColor = "white";
+      	document.getElementById("Texto2").innerHTML = '';
+      	document.getElementById("Cont_disparos").innerHTML = '';
+      	document.getElementById("Texto_VE").innerHTML = '';
+      	document.getElementById("vida_extra").setAttribute("hidden", "hidden");
+      	document.getElementById("BANG").setAttribute("hidden", "hidden");
+      	document.getElementById("Texto1").innerHTML = revolver;
+      	
+        $.ajax({
+            url: "/recargar",
+            type: "POST",
+            success: function(resp){
+            	revolver = resp;
+            	document.getElementById("Texto1").innerHTML = 'Presiona "Jalar el gatillo" para disparar, solo hay una bala.';
+            	cont = 0;
+            }
+        });
+        
+      });
+      
+      function disparar(){
+      
+      		if (cont < 6){
+      			if (revolver[cont] == '0'){
+      				document.getElementById("Texto1").innerHTML = '*click*';
+      				contAux = cont + 1;
+      				textoAux = contAux.toString();
+      				textoAux = textoAux.concat('/6 veces.');
+      				document.getElementById("Cont_disparos").innerHTML = texto.concat(textoAux);
+      				
+      			}else if(revolver[cont] == '1'){
+      				document.getElementById("Texto1").innerHTML = '';
+      				document.getElementById("Texto2").innerHTML = 'BANG';
+				document.getElementById("Cont_disparos").innerHTML = '';
+      				document.getElementById("Texto_VE").innerHTML = 'Has Muerto, para jugar otra vez, presiona "Recargar", para una vida extra, presiona "Vida Extra!"';
+      				document.getElementById("vida_extra").removeAttribute("hidden")
+      				document.getElementById("BANG").removeAttribute("hidden")
+      				document.body.style.backgroundColor = "maroon";
+      				cont = 10;
+      			}
+      			
+      			cont = cont + 1;
+      		}else if (cont == 9999999){
+      			document.getElementById("Texto1").innerHTML = 'No hay balas en la ruleta, presiona "Recargar" para recargar el arma.';
+      		}
+      }
+ </script>
+  
+</body>
+<html>
