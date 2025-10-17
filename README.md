@@ -22,37 +22,3 @@ Aplicación web que simula una ruleta rusa digital. El proyecto se divide en un 
    *(Agregar `-d` si se prefiere correrlos en segundo plano).*
 3. Abrir `http://localhost:5000` en el navegador. El botón **Recargar** solicita un nuevo tambor y **Jalar el gatillo** consume las posiciones de ese tambor hasta encontrar la bala.
 
-El `docker-compose.yml` hace referencia a imágenes ya construidas y publicadas. Si se modifica el código y se desean imágenes locales, se puede reemplazar la sección `image` por instrucciones `build` apuntando a `client/` y `server/`, o generar nuevas imágenes y etiquetarlas con los mismos nombres.
-
-## Ejecución local sin contenedores
-1. Iniciar Redis accesible bajo el host `redis-cluster`. Algunas opciones:
-   - Ejecutar `docker run --name redis-cluster -p 6379:6379 redis:alpine` y añadir `127.0.0.1 redis-cluster` al archivo `/etc/hosts`.
-   - O bien, modificar temporalmente el host en `client/serv-client.py` y `server/server.py` para apuntar a `localhost`.
-2. Crear y activar un entorno virtual en cada carpeta (`client/` y `server/`) e instalar dependencias:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   ```
-3. Ejecutar los servicios en terminales separadas:
-   ```bash
-   # En server/
-   python server.py
-
-   # En client/
-   python serv-client.py
-   ```
-4. Visitar `http://localhost:5000`.
-
-## Endpoints expuestos
-- `POST /recargar` (cliente): Obtiene el valor actual del tambor y lo elimina de Redis (`GETDEL`). Responde con una cadena de 6 caracteres (`0` = vacío, `1` = bala).
-- `GET /` (cliente): Renderiza la interfaz HTML de juego.
-
-## Despliegue en Kubernetes
-- `client.yaml`: Incluye un `Deployment` y un `Service` tipo `LoadBalancer`. Ajustar los puertos según el entorno (la aplicación escucha en el puerto 5000).
-- `server.yaml`: Define un `Deployment` para la imagen del servidor. Debe coexistir con una instancia accesible de Redis.
-
-## Próximos pasos sugeridos
-- Externalizar la configuración (host/puerto de Redis) mediante variables de entorno.
-- Agregar pruebas automatizadas o validaciones para el flujo del tambor.
-- Añadir un pipeline que construya y publique las imágenes del cliente y el servidor tras cada cambio.
